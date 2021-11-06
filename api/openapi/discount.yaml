@@ -1,0 +1,103 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Discount service
+  description: One stop solution for loyality program
+  contact:
+    name: Dmitry Makarenko
+servers:
+  - url: https://{hostname}/api
+    variables:
+      hostname:
+        default: localhost
+security:
+  - bearerAuth: [ ]
+paths:
+  /brand/{brandID}/codes/generate:
+    post:
+      operationId: generateCodes
+      parameters:
+        - in: path
+          name: brandID
+          schema:
+            type: string
+          required: true
+          description: ID of the brand
+        - in: query
+          name: amount
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 1
+          description: The number of codes to generate
+      responses:
+        '200':
+          description: Genereted discount codes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneratedDiscountCodes'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /brand/{brandID}/codes/fetch:
+    get:
+      operationId: fetchCode
+      parameters:
+        - in: path
+          name: brandID
+          schema:
+            type: string
+          required: true
+          description: ID of the brand
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscountCode'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    DiscountCode:
+      type: object
+      required: [ code, brand ]
+      properties:
+        code:
+          type: string
+        brand:
+          type: string
+    GeneratedDiscountCodes:
+      type: object
+      required: [ brand, amount ]
+      properties:
+        amount:
+          type: integer
+        brand:
+          type: string
+    Error:
+      type: object
+      required:
+        - slug
+        - message
+      properties:
+        slug:
+          type: string
+        message:
+          type: string
