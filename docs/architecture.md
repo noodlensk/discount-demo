@@ -1,10 +1,10 @@
 # architecture
 
-Brief overview of architecture
+Brief overview of architecture.
 
 ## ADR
 
-Explains base decisions about language choice, tools choice, etc.
+Explains base decisions about language, tools choice, etc.
 
 Can be found [here](./adr/README.md)
 
@@ -96,4 +96,4 @@ For now it's simplified and logic is based on `Role` + `AllowedBrandIDs` of the 
 
 ## Testing
 
-TODO: Unit testing and Acceptance testing using Cypress and cucumber.
+TODO: Unit testing and Acceptance testing using Cypress(TBC) and Cucumber.
