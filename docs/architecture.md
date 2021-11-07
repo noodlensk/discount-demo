@@ -11,7 +11,7 @@ Can be found [here](./adr/README.md)
 ## APIs
 
 OpenAPIs specification allow us to generate server, client stubs for any language as well as have documentation and
-version control for API changes
+version control for API changes.
 
 ## Data stores
 
@@ -19,13 +19,13 @@ For demo purpose - in-memory storage. Can be easily changed, for example to Post
 repository.
 
 Our app uses [optimistic locking and transactions](https://en.wikipedia.org/wiki/Optimistic_concurrency_control). It's
-up to the adapter to implement it, the interface for the repository easily allows this. In-memory implementation
-uses `sync.Mutex`, SQL implementation could use ACID transactions for it.
+the adapter responsibility to implement it, the interface for the repository easily allows this. In-memory
+implementation uses `sync.Mutex`, SQL implementation could use ACID transactions for the same purpose.
 
 ## Data validation
 
-In OpenAPI specification the provided min/max values, required flags, examples etc. But it's mostly for the client
-convenience.
+In OpenAPI specification the provided min/max values, required flags, examples etc. However, it's mostly for the client
+convenience and can't be used as the only place for validation.
 
 We are trying to keep validation on the domain level (by providing functions for creating/changing domain entities)
 which makes it impossible to have an invalid entity in runtime. But it's not always possible, usually, we need to
@@ -39,8 +39,8 @@ mind.
 
 The plan is to use [AMQP](https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol)
 , [Kafka](https://kafka.apache.org/) or even in-memory implementation of a queue for async communication. It's not in
-the scope of the current implementation. We defined the interface and mock implementation of it with the Fire and Forget
-pattern.
+the scope of the current implementation. We defined the interface and mock implementation of it with
+the `Fire and Forget` pattern.
 
 Real implementation could include separate microservice listening to the queue and executing pre-configured webhooks for
 informing brands about new users.
@@ -49,7 +49,7 @@ informing brands about new users.
 
 It designed to be based on [JWT bearer token](https://jwt.io/).
 
-For demo purposes we are not implementing real JWT flow, we have two tokens hardcoded in the
+For demo purposes we are not implementing real JWT flow, we have four tokens hardcoded in the
 app [auth middleware](./../internal/common/auth/static_token_http_auth_middleware.go)
 
 ```go
@@ -84,16 +84,18 @@ func NewStaticTokenHTTPMiddleware() StaticTokenHTTPMiddleware {
 }
 ```
 
-That means that if user send as `Authorization: Bearer brandA` we will auth him with corresponding user `brandA` and
+That means that if user send to us `Authorization: Bearer brandA` we will auth him with corresponding user `brandA` and
 email `brandA@example.com` from the map above.
 
 ### Permissions
 
-It supposed to be Policy-Based, not Role-Based. I.e. User could have permissions to generate codes for multiple brands,
-etc.
+It is supposed to be Policy-Based, not Role-Based. I.e. user could have permissions to generate codes on behalf of
+multiple brands, etc.
 
-For now it's simplified and logic is based on `Role` + `AllowedBrandIDs` of the user entity.
+For now, it's simplified and logic is based on `Role` + `AllowedBrandIDs` of the user entity.
 
 ## Testing
 
-TODO: Unit testing and Acceptance testing using Cypress(TBC) and Cucumber.
+Features definition could be found [here](./features/)
+
+TODO: Unit testing(using table tests) and Acceptance testing using Cypress(TBC) and Cucumber(TBC).
